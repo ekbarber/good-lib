@@ -1,0 +1,8 @@
+extends layout
+
+block content
+	h1= title
+	ul
+		each library in libraries
+			li
+				a(href='/libraries/'+library) #{library}
