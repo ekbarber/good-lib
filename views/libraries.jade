@@ -2,6 +2,10 @@ extends layout
 
 block content
 	h1= title
+	h2 Recent Library
+	
+	a(href='/libraries/' + recentLib) #{recentLib}
+	h2 All Libraries
 	ul
 		each library in libraries
 			li
