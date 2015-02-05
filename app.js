@@ -70,7 +70,7 @@ app.use(function(err, req, res, next) {
 });
 
 _db.once('open',function(){
-    console.log('connected to database')
+    console.log('connected to databases')
    //updateBooks();
 })
 

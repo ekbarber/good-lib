@@ -3,7 +3,10 @@ extends layout
 block content
 	h1= title
 	h2 Books Available
-	ul
+	table
 		each book in books
-			li
-				a(href='/books/'+book._id) #{book.title} 
+			tr
+				td
+					span #{book.thisLibrary.callNum}
+				td
+					a(href='/books/'+book._id) #{book.title}

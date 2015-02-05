@@ -28,9 +28,19 @@ router.get('/libraries', function(req, res, next){
 })
 
 router.get(/^\/libraries\/(\w+)\/?$/, function(req, res, next){
-	req.models.Book.find({'libraries.name':req.params[0]},function(err,result){
+	var library = {
+		name: req.params[0]
+	};
+	req.models.Book.find({'libraries.name':library.name},function(err,result){
 		if(err){throw err;}
-		res.render('library', {title:req.params[0], books:result});
+		result.forEach(function(book){
+			book.libraries.forEach(function(bookLibrary){
+				if(bookLibrary.name == library.name){
+					book.thisLibrary = bookLibrary;
+				}
+			});
+		});
+		res.render('library', {title:library.name, books:result});
 	})
 })
 module.exports = router;
