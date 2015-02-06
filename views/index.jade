@@ -1,8 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  a(href='/books') View Books
-  br
-  a(href='/libraries') View Libraries
+		div.jumbotron
+			h1= title
+		div.container-fluid
+			h2 Welcome to #{title}
+			ul(class=['nav','nav-pills','nav-stacked'])
+				li.active
+					a(href='/books') View Books
+				li.active
+					a(href='/libraries') View Libraries

@@ -1,8 +1,10 @@
 extends layout
 
 block content
-	h1= title
-	ul
-		each book in books
-			li
-				a(href='/books/'+book._id) #{book.title}
+	div.container-fluid
+		div.page-header
+			h1= title
+		ul.list-group
+			each book in books
+				li.list-group-item
+					a(href='/books/'+book._id) #{book.title}

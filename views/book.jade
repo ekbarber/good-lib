@@ -1,11 +1,11 @@
 extends layout
 
 block content
-	h1= book.title
-	= 'Last Updated'
-	h2 Available At:
-	ul
-		each library in book.libraries
-			li
-				a(href='/library/'+library.name) #{library.name}
-				span #{library.section} #{library.callNum}
+	div.container-fluid
+		div.page-header
+			h1= book.title
+		ul.list-group
+			each library in book.libraries
+				li(class= library.avail ? ['list-group-item','list-group-item-success'] : ['list-group-item','list-group-item-danger'])
+					span= library.name
+					span.badge #{library.section} #{library.callNum}

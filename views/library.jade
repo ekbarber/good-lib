@@ -1,12 +1,11 @@
 extends layout
 
 block content
-	h1= title
-	h2 Books Available
-	table
+	div.page-header
+		h1= title
+	ul.list-group
 		each book in books
-			tr
-				td
-					span #{book.thisLibrary.callNum}
-				td
-					a(href='/books/'+book._id) #{book.title}
+			li(class= book.thisLibrary.avail ? ['list-group-item','list-group-item-success'] : ['list-group-item','list-group-item-danger'])
+				a(href='/books/'+book._id) #{book.title}
+				span.badge #{book.thisLibrary.callNum}
+					

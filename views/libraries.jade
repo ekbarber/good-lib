@@ -1,12 +1,14 @@
 extends layout
 
 block content
-	h1= title
-	h2 Recent Library
-	
-	a(href='/libraries/' + recentLib) #{recentLib}
-	h2 All Libraries
-	ul
+	div.page-header
+		h1= title
+	h3 Recent Library
+	ul.list-group
+		li.list-group-item
+			a(href='/libraries/' + recentLib) #{recentLib}
+	h3 All Libraries
+	ul.list-group
 		each library in libraries
-			li
+			li.list-group-item
 				a(href='/libraries/'+library) #{library}
