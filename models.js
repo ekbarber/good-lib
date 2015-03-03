@@ -10,6 +10,7 @@ var _librarySchema = mongoose.Schema({
 var _bookSchema = mongoose.Schema({
 	title: String,
 	isbn: String,
+	isbn13: String,
 	lastUpdated: {type:Date,default: Date.now},
 	libraries:[_librarySchema]
 });

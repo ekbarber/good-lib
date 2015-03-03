@@ -13,7 +13,7 @@ var searchCatalog = require('./lib/search-catalog');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var BOOK_UPDATE_INTERVAL = 10000; //10 seconds
+var last_update_time = 0;
 var app = express();
 
 mongoose.connect('mongodb://localhost/goodlib');
@@ -34,7 +34,14 @@ app.use(function(req, res, next){
     req.models = models;
     next();
 })
-
+app.use(function(req, res, next){
+    console.log('last updated at: %s', last_update_time);
+    if(last_update_time === 0 || (new Date().getTime() - last_update_time) > 120000){
+        updateBooks();
+        last_update_time = new Date().getTime()
+    }
+    next();
+})
 app.use('/', routes);
 app.use('/users', users);
 
@@ -70,50 +77,38 @@ app.use(function(err, req, res, next) {
 });
 
 _db.once('open',function(){
-    console.log('connected to databases')
+   console.log('connected to databases')
    //updateBooks();
 })
 
 
 function updateBooks(callback){
     callback = callback || function(){};
+    console.log('Updating books')
     goodreads.getBooks(function(books){
-        var bookInfo = books[0][0];
-        models.Book.remove();
-        books.forEach(function(bookInfo){
-            bookInfo = bookInfo[0];
-            console.log('checking %s', bookInfo.title[0]);
-            
-            models.Book.find({isbn:bookInfo.isbn[0]},function(err, results){
-                if(err){throw err;}
-
-                //If it doesn't exit, we'll create a new one
-                if(results.length === 0){
-                    console.log('%s doesnt exist, creating new', bookInfo.title[0])
-                    var book = new models.Book({
-                        title:bookInfo.title[0],
-                        isbn:bookInfo.isbn[0],
-                        libraries:catalogResults
-                    });
-                    book.save(function(err, book){
-                        if(err){throw err;}
-                        updateBookLibraries(book)
-                        console.log("%s saved", book.title)
-                    })  
-                }else{
-                    var book = results[0];
-                    console.log("%s already in db", book.title)
-                    updateBookLibraries(book);
-                }
+        models.Book.remove(function(){
+            console.log("Clearing all books");
+            books.forEach(function(bookInfo){
+                console.log('checking %s', bookInfo.title[0]);
+                var book = new models.Book({
+                    title:bookInfo.title[0],
+                    isbn:bookInfo.isbn[0],
+                    isbn13:bookInfo.isbn13[0]
+                });
+                book.save(function(err, book){
+                    if(err){throw err;}
+                    updateBookLibraries(book)
+                    console.log("%s saved", book.title)
+                })
             })
-        })
-            
+        });
     });
 }
 function updateBookLibraries(book){
-    console.log('searching catalog for %s', book.title);
+    //console.log(book);
+    console.log('searching catalog for %s, [%s]', book.title,book.isbn13);
     book.libraries = [];
-    searchCatalog(book.isbn, function(catalogResults){
+    searchCatalog(book.isbn13, function(catalogResults){
         console.log('found %s libraries for %s', catalogResults.length, book.title);
         catalogResults.forEach(function(libraryInfo){
             book.libraries.push(libraryInfo);

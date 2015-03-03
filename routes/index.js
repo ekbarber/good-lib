@@ -3,6 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	console.log('test');
   res.render('index', { title: 'Find some books!' });
 });
 
@@ -14,7 +15,7 @@ router.get('/books', function(req, res, next) {
 });
 router.get(/^\/books\/(\w+)\/?$/, function(req, res, next) {
 
-	req.models.Book.findOne({_id:req.params[0]}, function(err, book){
+	req.models.Book.findOne({isbn13:req.params[0]}, function(err, book){
 		if(err){throw err;}
 		res.render('book', {book:book})
 	})
